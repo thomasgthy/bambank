@@ -1,8 +1,9 @@
-  <li>
-  <%= link_to('Logout', destroy_user_session_path, method: :delete) %>        
-  </li>
-
-  <li>
-  <%= link_to('New Transaction', new_transaction_path) %>        
-  </li>
-  <%= current_user.account.balance %>
+<div class="container">
+	<div class="row">
+		<%= link_to('Logout', destroy_user_session_path, method: :delete, class: "btn btn-danger") %>
+		<br>
+		<%= link_to('New Transaction', new_transaction_path, class: "btn btn-success") %>        
+		<br>
+		Your current balance: <%= current_user.account.balance %> Bambeuros
+	</div>
+</div>

@@ -1,26 +1,31 @@
-<%= form_with(model: transaction, local: true) do |form| %>
-  <% if transaction.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+  <div class="container">
+  <%= form_with(model: transaction, local: true) do |form| %>
+    <% if transaction.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
 
-      <ul>
-      <% transaction.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+        <ul>
+        <% transaction.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+  <div class="form-group">
+    <label >Select a user to send money to:</label>
+    <%= form.select 'to_id', options_for_select(@users.collect{ |u| [u.email, u.id] }), class: "form-control" %>
+  </div>
+
+  <div class="input-group">
+    <span class="input-group-addon">Bambeuros</span>
+      <%= form.text_field :amount, class: "form-control" %>
+  </div>
+
+  <br>
+    </div>
+    <div class="actions">
+      <%= form.submit %>
     </div>
   <% end %>
-
-<%= form.select 'to_id', options_for_select(@users.collect{ |u| [u.email, u.id] }) %>
-
-<div class="input-group">
-  <span class="input-group-addon">B</span>
-    <%= form.text_field :amount, class: "form-control" %>
 </div>
-
-<br>
-  </div>
-  <div class="actions">
-    <%= form.submit "Launch the transaction" %>
-  </div>
-<% end %>

@@ -1,5 +1,5 @@
 class TransactionsController < ApplicationController
-  before_action :set_transaction, only: [:show, :edit, :update, :destroy]
+  before_action :set_transaction, only: [:show, :destroy]
 
   # GET /transactions
   # GET /transactions.json
@@ -18,19 +18,19 @@ class TransactionsController < ApplicationController
     @users=User.all.select { |user| user != current_user }
   end
 
-  # GET /transactions/1/edit
-  def edit
-  end
-
   # POST /transactions
   # POST /transactions.json
   def create
     @users=User.all.select { |user| user != current_user }
     @transaction = Transaction.new(transaction_params)
     @transaction.from_id=current_user.account.id
-    
+    #if @transaction.save && performTransaction(@transaction)
+    #  redirect_to root_path, notice: 'Transaction was successfully created.'
+    #else
+    #  redirect_to new_transaction_path, notice: "Oops, something went wrong... Please make sure you have enough money for the transaction."
+    #end
     respond_to do |format|
-      if @transaction.save && performTransaction(@transaction)
+      if performTransaction
         format.html { redirect_to @transaction, notice: 'Transaction was successfully created.' }
         format.json { render :show, status: :created, location: @transaction }
       else
@@ -42,18 +42,20 @@ class TransactionsController < ApplicationController
 
   private
 
-    def performTransaction(transaction)
+    def performTransaction
       ActiveRecord::Base.transaction do
-        from_account=Account.find(transaction.from_id)
-        to_account=Account.find(transaction.to_id)
-        if(from_account.balance<transaction.amount)
-          false
+        from_account=Account.find(@transaction.from_id)
+        to_account=Account.find(@transaction.to_id)
+        if from_account.balance<@transaction.amount
+          @transaction.errors.add(:amount, "too high for your current balance")
+          return false
         else
-          from_account.balance=from_account.balance-transaction.amount
-          from_account.save!
-          to_account.balance=to_account.balance+transaction.amount
-          to_account.save!
-          true
+          from_account.balance=from_account.balance-@transaction.amount
+          from_account.save
+          to_account.balance=to_account.balance+@transaction.amount
+          to_account.save
+          @transaction.save
+          return true
         end
       end
     end
