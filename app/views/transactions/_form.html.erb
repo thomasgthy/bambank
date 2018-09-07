@@ -11,7 +11,16 @@
     </div>
   <% end %>
 
+<%= form.select 'to_id', options_for_select(@users.collect{ |u| [u.email, u.id] }) %>
+
+<div class="input-group">
+  <span class="input-group-addon">B</span>
+    <%= form.text_field :amount, class: "form-control" %>
+</div>
+
+<br>
+  </div>
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit "Launch the transaction" %>
   </div>
 <% end %>
