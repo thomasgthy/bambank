@@ -1,11 +1,12 @@
 <p id="notice"><%= notice %></p>
-
+<!-- Small control panel for the app -->
 <%= link_to 'New Transaction', new_transaction_path, class: "btn btn-default" %>
 <br/>
 <%= link_to('Logout', destroy_user_session_path, method: :delete, class: "btn btn-danger") %>
 <br/>
 <h3>Your current balance is: <%= @current_balance %> Bambeuros</h3>
 
+<!-- Split the view in 2 colums for transactions sent and received -->
 <div class="row">
 	<div class="col-sm-6">
     	<h1>Transactions sent</h1>

@@ -11,16 +11,19 @@
     </div>
   <% end %>
 
+<!-- Select which user to send the money -->
 <div class="form-group">
   <label >Select a user to send money to:</label>
   <%= form.select 'to_id', options_for_select(@users.collect{ |u| [u.email, u.id] }), class: "form-control" %>
 </div>
 
+<!-- Put the amount -->
 <div class="input-group">
   <span class="input-group-addon">Bambeuros</span>
-    <%= form.text_field :amount, class: "form-control" %>
+    <%= form.number_field :amount, class: "form-control", placeholder: "You have currently #{current_user.account.balance} B", :step => 0.5, min: 0, max: 100000 %>
 </div>
 <br/>
+<!-- Confirm the transaction -->
   <div class="actions">
     <%= form.submit %>
   </div>

@@ -21,45 +21,23 @@ class TransactionsController < ApplicationController
   # POST /transactions
   # POST /transactions.json
   def create
+    #Get all users except the current one for selecting the receiver
     @users=User.all.select { |user| user != current_user }
     @transaction = Transaction.new(transaction_params)
+    #Fill the from_id transaction
     @transaction.from_id=current_user.account.id
-
-    respond_to do |format|
-      if performTransaction
-        format.html { redirect_to @transaction, notice: 'Transaction was successfully created.' }
-        format.json { render :show, status: :created, location: @transaction }
-      else
-        format.html { render :new }
-        format.json { render json: @transaction.errors, status: :unprocessable_entity }
+      respond_to do |format|
+        if @transaction.save && helpers.performTransaction(@transaction)
+          format.html { redirect_to root_path, notice: 'Transaction was successfully created.' }
+          format.json { render :show, status: :created, location: @transaction }
+        else
+          format.html { render :new }
+          format.json { render json: @transaction.errors, status: :unprocessable_entity }
       end
     end
   end
 
   private
-
-    def performTransaction
-      ActiveRecord::Base.transaction do
-        if @transaction.from_id.nil? || @transaction.to_id.nil?
-          @transaction.errors.add(:user, "cannot be nil.")
-          return false
-        end
-        from_account=Account.find(@transaction.from_id)
-        to_account=Account.find(@transaction.to_id)
-
-        if from_account.balance<@transaction.amount
-          @transaction.errors.add(:amount, "is too high for your current balance.")
-          return false
-        else
-          from_account.balance=from_account.balance-@transaction.amount
-          from_account.save
-          to_account.balance=to_account.balance+@transaction.amount
-          to_account.save
-          @transaction.save
-          return true
-        end
-      end
-    end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_transaction
