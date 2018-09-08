@@ -22,6 +22,7 @@ Following are the steps to set up the database(from the root directory):
 	```ruby
 	bin/rails db:create
 	bin/rails db:migrate
+	bin/rails db:seed (To fill the db with some users)
 	```
 
 * Run test suite
@@ -32,6 +33,18 @@ To run the tests, run the following command from the root directory:
 I have mainly focused the test on the transaction part as it is the core of the platform and
 comes from myself. 
 The authentication plugin is fully tested so I chose to focus my time on the transaction.
+
+* Utilisation
+To run the project on your local server, run the following command:
+	```ruby
+		rails s
+	```
+
+This will run a local server serving the project at the following address: ```localhost:3000```
+Then you can open a browser and go to ```localhost:3000```.
+You will see a basic sign in page, click on sign up to create an account with an email and a password.
+After registrating, you will see the home dashboard with your initial balance of 100 Bambeuros.
+You can then click on "New Transaction" to send your first Bambeuros to another user !
 
 * Description of my approach  
 After reading the test description, I have first thinking about the data model.
